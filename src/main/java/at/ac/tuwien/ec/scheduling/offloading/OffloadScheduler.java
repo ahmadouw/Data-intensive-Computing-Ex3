@@ -24,9 +24,7 @@ import at.ac.tuwien.ec.scheduling.simulation.SimIteration;
 public abstract class OffloadScheduler extends SimIteration implements Serializable{
 	
 		
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 3536972473535149228L;
 	private double currentTime = 0.0;
 
@@ -75,42 +73,60 @@ public abstract class OffloadScheduler extends SimIteration implements Serializa
 	}
 
 	
-
+	/**
+	 * Checks if MobileSoftwareComponent s can be allocated to node n
+	 * @param deployment the target scheduling
+	 * @param s the mobile software component
+	 * @param n the target hardware node
+	 * @return true if mobileSoftwareComponent can be scheduled on target node n
+	 */
 	protected boolean isValid(OffloadScheduling deployment, MobileSoftwareComponent s, ComputationalNode n) {
+		//tasks with no computational load are always welcome :) (dummy tasks, used for DAG balancing)
 		if(s.getMillionsOfInstruction() == 0)
 			return true;
+		//if task is not offloaded, we consider the CPU consumption of mobile device; otherwise, its network consumption
 		double consOnMobile = (currentInfrastructure.getMobileDevices().containsKey(n.getId()))? 
 				n.getCPUEnergyModel().computeCPUEnergy(s, n, currentInfrastructure) :
-					currentInfrastructure.getNodeById(s.getUserId()).getNetEnergyModel().computeNETEnergy(s, n, currentInfrastructure) ;
-				boolean compatible = n.isCompatible(s);
-				boolean offloadPossible = isOffloadPossibleOn(s, n);
-				boolean consAcceptable = ((MobileDevice)currentInfrastructure.getNodeById(s.getUserId())).getEnergyBudget() - consOnMobile >= 0;
-				boolean linksOk = checkLinks(deployment,s,n);
-				return compatible && offloadPossible && consAcceptable;// && linksOk;
+					currentInfrastructure.getNodeById(s.getUserId()).getNetEnergyModel().computeNETEnergy(s, n, currentInfrastructure);
+				boolean compatible = n.isCompatible(s); //checks if target node hardware capabilities match task requirements
+				boolean offloadPossible = isOffloadPossibleOn(s, n); //checks if there is connectivity between mobile device and target node
+				boolean consAcceptable = ((MobileDevice)currentInfrastructure
+						.getNodeById(s.getUserId())).getEnergyBudget() - consOnMobile >= 0; //checks if there is enough energy to execute/offload
+				boolean linksOk = checkLinks(deployment,s,n); //checks connectivity between nodes (i.e., if predecessor's target node can send its output to current target)
+				return compatible && offloadPossible && consAcceptable && linksOk;
 						
 	}
 
+	/**
+	 * Adds task to the current deployment, updating its values and hardware availability
+	 * @param deployment the current OffloadScheduling
+	 * @param s the MobileSoftwareComponent
+	 * @param n the target ComputationalNode
+	 */
 	protected synchronized void deploy(OffloadScheduling deployment, MobileSoftwareComponent s, ComputationalNode n) {
 		deployment.put(s, n);
 		deployment.addCost(s,n, currentInfrastructure);
 		deployment.addEnergyConsumption(s, n, currentInfrastructure);
 		deployment.addProviderCost(s,n,currentInfrastructure);
 		deployment.addRuntime(s, n, currentInfrastructure);
-			//System.out.println(deployment + " " + deployment.size());
-		n.deploy(s);
+		n.deploy(s); //updates hardware availability
 	}
 
+	/**
+	 * Removes task to the current deployment, updating values and hardware availability
+	 * @param deployment the current OffloadScheduling
+	 * @param s the MobileSoftwareComponent
+	 * @param n the target ComputationalNode
+	 */
 	protected void undeploy(OffloadScheduling deployment, MobileSoftwareComponent s, ComputationalNode n) {
 		if (deployment.containsKey(s)) {
-			n.undeploy(s);
+			n.undeploy(s); //updates hardware availability
 			deployment.removeRuntime(s, n, currentInfrastructure);
 			deployment.removeCost(s, n, currentInfrastructure);
 			deployment.removeEnergyConsumption(s, n, currentInfrastructure);
 			deployment.removeProviderCost(s,n,currentInfrastructure);
 			deployment.remove(s);
-			
 		}
-		// System.out.println("UNDEP"+deployment);
 	}
 
 	
