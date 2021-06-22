@@ -23,20 +23,28 @@ import java.util.Iterator;
  */
 public class Chromosome extends OffloadScheduler {
 
+    private int id;
+    private ArrayList<OffloadScheduling> scheduling;
+
     // TODO: 6/22/21 its not exactly clear if all nodes are offloaded here or if I should randomly decide to not offload
 
-    public Chromosome(MobileApplication A, MobileCloudInfrastructure I) {
+    public Chromosome(int id, MobileApplication A, MobileCloudInfrastructure I) {
         super();
+        this.id = id;
         setMobileApplication(A);
         setInfrastructure(I);
     }
 
+    public int getId() {
+        return id;
+    }
 
-    // same as first constructor but input within a tuple
-    public Chromosome(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
-        super();
-        setMobileApplication(t._1());
-        setInfrastructure(t._2());
+    public ArrayList<OffloadScheduling> getScheduling() {
+        return scheduling;
+    }
+
+    public void createScheduling() {
+        this.scheduling = findScheduling();
     }
 
     @Override

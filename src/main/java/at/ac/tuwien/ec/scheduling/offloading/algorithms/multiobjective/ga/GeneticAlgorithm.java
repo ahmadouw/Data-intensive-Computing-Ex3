@@ -6,13 +6,15 @@ import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduler;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduling;
 import at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga.Chromosome;
 import scala.Tuple2;
+import scala.Tuple4;
+import scala.Tuple5;
 
 import java.util.ArrayList;
 
 public class GeneticAlgorithm extends OffloadScheduler {
 
     private static final int POPULATION_SIZE = 1000;
-    private ArrayList<ArrayList<OffloadScheduling>> population = new ArrayList<>();
+    private ArrayList<Chromosome> population = new ArrayList<>();
 
     /*
     useful methods to use:
@@ -107,14 +109,39 @@ public class GeneticAlgorithm extends OffloadScheduler {
      */
     private void createRandomPopulation() {
         for (int i = 0; i < POPULATION_SIZE; i++) {
-            Chromosome chromosome = new Chromosome(getMobileApplication(), getInfrastructure());
-            population.add((ArrayList<OffloadScheduling>) chromosome.findScheduling());
+            Chromosome chromosome = new Chromosome(i, getMobileApplication(), getInfrastructure());
+            chromosome.createScheduling();
+            population.add(chromosome);
         }
     }
 
-    // todo: implement or call the fitness function for a given cromosom
+    // todo: implement or call the fitness function for a given chromosome
     //   what is my function to optimize is there a priority of the 4 ?
-    private void fitnessFunction() {
+    // dummy fitness function that sums up the metrics by type
+    private Tuple4<Double, Double, Double, Double> fitnessFunction(ArrayList<OffloadScheduling> chromosome) {
+        if(chromosome == null) {
+            return new Tuple4<>(-1.0, -1.0, -1.0, -1.0);
+        }
+
+        double runTime = 0.0;
+        double userCost = 0.0;
+        double batteryLife = 0.0;
+        double executionTime = 0.0;
+
+        for(OffloadScheduling os : chromosome) {
+            runTime += os.getRunTime();
+            userCost += os.getUserCost();
+            batteryLife += os.getBatteryLifetime();
+            executionTime += os.getExecutionTime();
+        }
+
+        return new Tuple4<>(runTime, userCost, batteryLife, executionTime);
+    }
+
+    // TODO: define ranking based on the fitness function
+    //  use weights
+    //  maybe just return a ranking array which holds the id of the chromosomes in ranked order
+    private void rankChromosomes() {
 
     }
 
