@@ -5,5 +5,5 @@ spark-submit target/sleipnir.jar
 run with debug configuration:
 follow steps in https://sparkbyexamples.com/spark/how-to-debug-spark-application-locally-or-remote/
 mvn clean package -Dmaven.test.skip
-spark-submit --name SparkByExamples.com --class org.sparkbyexamples.SparkWordCountExample --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+spark-submit --conf spark.driver.extraJavaOptions=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 target/sleipnir.jar
 + start Debugger
