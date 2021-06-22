@@ -1,15 +1,18 @@
-package at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.scheduling;
+package at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga;
 
-import at.ac.tuwien.ec.scheduling.Scheduling;
+import at.ac.tuwien.ec.model.infrastructure.MobileCloudInfrastructure;
+import at.ac.tuwien.ec.model.software.MobileApplication;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduler;
+import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduling;
+import at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga.Chromosome;
+import scala.Tuple2;
 
 import java.util.ArrayList;
 
 public class GeneticAlgorithm extends OffloadScheduler {
-    @Override
-    public ArrayList<? extends Scheduling> findScheduling() {
-        return null;
-    }
+
+    private static final int POPULATION_SIZE = 1000;
+    private ArrayList<ArrayList<OffloadScheduling>> population = new ArrayList<>();
 
     /*
     useful methods to use:
@@ -61,44 +64,86 @@ public class GeneticAlgorithm extends OffloadScheduler {
     ft(u) is the finish time of task u
      */
 
-    // TODO: 6/21/21 what is my function to optimize is there a priority of the 4 ?
+    public GeneticAlgorithm(MobileApplication A, MobileCloudInfrastructure I) {
+        super();
+        setMobileApplication(A);
+        setInfrastructure(I);
+    }
 
-    // todo: generate an initial population
 
-    // todo: implement or call the fitness function for a given cromosom
+    // same as first constructor but input within a tuple
+    public GeneticAlgorithm(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
+        super();
+        setMobileApplication(t._1());
+        setInfrastructure(t._2());
+    }
 
-    // todo: select a pair of individuals based on the fitness function
+    @Override
+    // override which implements the logic of the scheduling
+    public ArrayList<OffloadScheduling> findScheduling() {
+        // generate the initial population
+        createRandomPopulation();
 
-    // todo: produce next generation from the selected pairs by performing random changes on the slected partners
-    //  mutation
-    //  crossover
+        // todo: produce next generation from the selected pairs by performing random changes on the slected partners
+        return null;
+    }
 
-    // todo: stopping criterion
-    //  some value ot be satisfied
-    //  no improvement for several iterations
-    //  better than other algorithm ?
+
+    // todo: inizialise population by randomly placing each task on a processor
+    //  what does that exactly mean ?
+    //  use different random number generators (Poisson, Nomral, Uniform, Laplace)
+    //  can lead to configurations that do not correspond to the specification
+    //  make corrections to make the generated chromosome compliant with the specification or by including penalties in the fitness function
 
     // todo: decide on which structure to use to represent chromosomes
-    // chromosome -> individual in the population
+    //  chromosome -> individual in the population
     //  represents a possible solution to a problem
     //  this is a schedule of a group of tasks on a group of processors
     //  can be represented as a sequence of individual schedules -> one for each processor in the group
     //    separated by special values (Tj, Pi)
     //  queue of tasks assigned to that processor
+    /**
+     * Creates a random population of chromosomes for the implementation of the Genetic Algorithm.
+     */
+    private void createRandomPopulation() {
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+            Chromosome chromosome = new Chromosome(getMobileApplication(), getInfrastructure());
+            population.add((ArrayList<OffloadScheduling>) chromosome.findScheduling());
+        }
+    }
 
-    // todo: inizialise population by randomly placing each task on a processor
-    //  what does that exactly mean ?
-    //  use different random number generators (Poisson, Nomral, Uniform, Laplace)
-    // can lead to configurations that do not correspond to the specification
-    // make corrections to make the generated chromosome compliant with the specification or by including penalties in the fitness function
+    // todo: implement or call the fitness function for a given cromosom
+    //   what is my function to optimize is there a priority of the 4 ?
+    private void fitnessFunction() {
+
+    }
+
 
     // todo mutation:
     //  randomly altering certain genes
     //  dynamically adjust the mutation rate depending on the fitness variation
     //   see paper
+    private void mutate() {
+
+    }
+
+    // todo: crossover, not much information in paper
+    private void crossover() {
+
+    }
 
     // todo: roulett wheel selection method
+    //   select a pair of individuals based on the fitness function
+    private void selection() {
 
+    }
 
+    // todo: stopping criterion
+    //  some value ot be satisfied
+    //  no improvement for several iterations
+    //  better than other algorithm ?
+    private void earlyStopping() {
+
+    }
 
 }

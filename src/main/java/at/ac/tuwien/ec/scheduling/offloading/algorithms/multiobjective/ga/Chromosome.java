@@ -1,4 +1,4 @@
-package at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.scheduling;
+package at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga;
 
 import at.ac.tuwien.ec.model.infrastructure.MobileCloudInfrastructure;
 import at.ac.tuwien.ec.model.infrastructure.computationalnodes.ComputationalNode;
@@ -15,22 +15,28 @@ import scala.Tuple2;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class RandomOffloading extends OffloadScheduler {
+/**
+ * The chromosome class is modelled after the RandomOffloadScheduler of the Tutorial
+ * Instead of using just a Uniform distribution for creating the scheduling a combination of different
+ * random number generators is used as described in the paper Genetic algorithm for DAG scheduling in Grid environments
+ * DOI: https://doi.org/10.1109/ICCP.2009.5284747
+ */
+public class Chromosome extends OffloadScheduler {
 
-    public RandomOffloading(MobileApplication A, MobileCloudInfrastructure I) {
+    // TODO: 6/22/21 its not exactly clear if all nodes are offloaded here or if I should randomly decide to not offload
+
+    public Chromosome(MobileApplication A, MobileCloudInfrastructure I) {
         super();
-        // models current mobile workload
         setMobileApplication(A);
-        // models current mobile infrastructure
         setInfrastructure(I);
     }
 
+
     // same as first constructor but input within a tuple
-    public RandomOffloading(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
+    public Chromosome(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
         super();
         setMobileApplication(t._1());
         setInfrastructure(t._2());
-        System.out.println("USING RANDOM OFFLOADING");
     }
 
     @Override
