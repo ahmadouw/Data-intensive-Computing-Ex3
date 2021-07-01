@@ -4,16 +4,17 @@ import at.ac.tuwien.ec.model.infrastructure.MobileCloudInfrastructure;
 import at.ac.tuwien.ec.model.software.MobileApplication;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduler;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduling;
-import at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga.Chromosome;
 import scala.Tuple2;
-import scala.Tuple4;
-import scala.Tuple5;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GeneticAlgorithm extends OffloadScheduler {
 
-    private static final int POPULATION_SIZE = 1000;
+    private static final int POPULATION_SIZE = 3;
+
     private ArrayList<Chromosome> population = new ArrayList<>();
 
     /*
@@ -66,13 +67,6 @@ public class GeneticAlgorithm extends OffloadScheduler {
     ft(u) is the finish time of task u
      */
 
-    public GeneticAlgorithm(MobileApplication A, MobileCloudInfrastructure I) {
-        super();
-        setMobileApplication(A);
-        setInfrastructure(I);
-    }
-
-
     // same as first constructor but input within a tuple
     public GeneticAlgorithm(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
         super();
@@ -84,67 +78,18 @@ public class GeneticAlgorithm extends OffloadScheduler {
     // override which implements the logic of the scheduling
     public ArrayList<OffloadScheduling> findScheduling() {
         // generate the initial population
-        createRandomPopulation();
+        for (int i = 0; i < POPULATION_SIZE; i++) {
+            population.add(new Chromosome(i, getMobileApplication(), getInfrastructure()));
+        }
+
+
+        Collections.sort(population);
 
         // todo: produce next generation from the selected pairs by performing random changes on the slected partners
-        return null;
+
+        // return top scheduling
+        return (ArrayList<OffloadScheduling>) List.of(population.get(0).getScheduling());
     }
-
-
-    // todo: inizialise population by randomly placing each task on a processor
-    //  what does that exactly mean ?
-    //  use different random number generators (Poisson, Nomral, Uniform, Laplace)
-    //  can lead to configurations that do not correspond to the specification
-    //  make corrections to make the generated chromosome compliant with the specification or by including penalties in the fitness function
-
-    // todo: decide on which structure to use to represent chromosomes
-    //  chromosome -> individual in the population
-    //  represents a possible solution to a problem
-    //  this is a schedule of a group of tasks on a group of processors
-    //  can be represented as a sequence of individual schedules -> one for each processor in the group
-    //    separated by special values (Tj, Pi)
-    //  queue of tasks assigned to that processor
-    /**
-     * Creates a random population of chromosomes for the implementation of the Genetic Algorithm.
-     */
-    private void createRandomPopulation() {
-        for (int i = 0; i < POPULATION_SIZE; i++) {
-            Chromosome chromosome = new Chromosome(i, getMobileApplication(), getInfrastructure());
-            chromosome.createScheduling();
-            population.add(chromosome);
-        }
-    }
-
-    // todo: implement or call the fitness function for a given chromosome
-    //   what is my function to optimize is there a priority of the 4 ?
-    // dummy fitness function that sums up the metrics by type
-    private Tuple4<Double, Double, Double, Double> fitnessFunction(ArrayList<OffloadScheduling> chromosome) {
-        if(chromosome == null) {
-            return new Tuple4<>(-1.0, -1.0, -1.0, -1.0);
-        }
-
-        double runTime = 0.0;
-        double userCost = 0.0;
-        double batteryLife = 0.0;
-        double executionTime = 0.0;
-
-        for(OffloadScheduling os : chromosome) {
-            runTime += os.getRunTime();
-            userCost += os.getUserCost();
-            batteryLife += os.getBatteryLifetime();
-            executionTime += os.getExecutionTime();
-        }
-
-        return new Tuple4<>(runTime, userCost, batteryLife, executionTime);
-    }
-
-    // TODO: define ranking based on the fitness function
-    //  use weights
-    //  maybe just return a ranking array which holds the id of the chromosomes in ranked order
-    private void rankChromosomes() {
-
-    }
-
 
     // todo mutation:
     //  randomly altering certain genes
