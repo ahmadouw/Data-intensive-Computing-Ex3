@@ -13,6 +13,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import scala.Tuple2;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GeneticAlgorithm extends OffloadScheduler {
 
@@ -169,8 +170,8 @@ public class GeneticAlgorithm extends OffloadScheduler {
         long endTime = System.currentTimeMillis();
 
         // capture metrics
-        this.averageFitness.add(calculateAverage(fitness));
-        this.averageRunTime.add(calculateAverage(runTimes));
+        this.averageFitness.add(calculateAverage(new ArrayList<>(fitness.values())));
+        this.averageRunTime.add(calculateAverage(runTimes.values().stream().filter(v -> !Double.isInfinite(v) && v > 0.0).collect(Collectors.toList())));
         this.numberValidSchedules.add((int) fitness.values().stream().filter(v -> v > 0.0).count());
         this.fitnessCalculationTime.add(endTime - startTime);
         return fitness;
@@ -297,12 +298,12 @@ public class GeneticAlgorithm extends OffloadScheduler {
         return chromosomeMutated;
     }
 
-    private double calculateAverage(HashMap<Integer, Double> values) {
+    private double calculateAverage(List<Double> values) {
         double sum = 0.0;
-        for (double value : values.values()) {
+        for (double value : values) {
             sum += value;
         }
-        return sum / values.values().size();
+        return sum / values.size();
     }
     
     private OffloadScheduling getTopChromosome(ArrayList<LinkedHashMap<MobileSoftwareComponent, ComputationalNode>> population, HashMap<Integer, Double> fitness) {
