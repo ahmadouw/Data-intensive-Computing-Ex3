@@ -35,7 +35,7 @@ import sun.security.provider.certpath.Vertex;
  * in IEEE Transactions on Parallel and Distributed Systems, vol. 13, no. 3, pp. 260-274, March 2002, doi: 10.1109/71.993206.
  */
 
-public class HLEFT extends OffloadScheduler {
+public class HLFET extends OffloadScheduler {
     /**
      *
      * @param A MobileApplication property from  SimIteration
@@ -43,14 +43,14 @@ public class HLEFT extends OffloadScheduler {
      * Constructors set the parameters and calls setRank() to nodes' ranks
      */
 
-    public HLEFT(MobileApplication A, MobileCloudInfrastructure I) {
+    public HLFET(MobileApplication A, MobileCloudInfrastructure I) {
         super();
         setMobileApplication(A);
         setInfrastructure(I);
         setRank(this.currentApp,this.currentInfrastructure);
     }
 
-    public HLEFT(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
+    public HLFET(Tuple2<MobileApplication,MobileCloudInfrastructure> t) {
         super();
         setMobileApplication(t._1());
         setInfrastructure(t._2());
@@ -157,7 +157,7 @@ public class HLEFT extends OffloadScheduler {
     }
 
     /**
-     * bLevel is the task prioritizing phase of HLEFT
+     * bLevel is the task prioritizing phase of HLFET
      * @param msc
      * @param dag Mobile Application's DAG
      * @param infrastructure

@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import at.ac.tuwien.ec.scheduling.offloading.algorithms.heuristics.HLEFT;
+import at.ac.tuwien.ec.scheduling.offloading.algorithms.heuristics.HLFET;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
