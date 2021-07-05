@@ -16,6 +16,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
+import at.ac.tuwien.ec.scheduling.algorithms.heftbased.*;
+import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MAX;
+import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MEAN;
+import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MEDIAN;
+import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MIN;
 import at.ac.tuwien.ec.scheduling.offloading.algorithms.heuristics.HLFET;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Level;
@@ -51,7 +56,6 @@ import at.ac.tuwien.ec.provisioning.edge.mo.MOEdgePlanning;
 import at.ac.tuwien.ec.provisioning.mobile.DefaultMobileDevicePlanner;
 import at.ac.tuwien.ec.provisioning.mobile.MobileDevicePlannerWithMobility;
 import at.ac.tuwien.ec.scheduling.Scheduling;
-import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFTCostResearch;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduler;
 import at.ac.tuwien.ec.scheduling.offloading.OffloadScheduling;
 import at.ac.tuwien.ec.scheduling.offloading.algorithms.heftbased.HEFTBattery;
@@ -205,9 +209,13 @@ public class OffloadingHelloWorld {
 						ArrayList<Tuple2<OffloadScheduling,Tuple5<Integer,Double,Double,Double,Double>>> output = 
 								new ArrayList<Tuple2<OffloadScheduling,Tuple5<Integer,Double,Double,Double,Double>>>();
 						OffloadScheduler singleSearch;
-						
-						singleSearch = new HEFTResearch(inputValues);
-						
+						// to use a specific algorithm, just uncomment the specified line and run the simulation
+						singleSearch = new HLFET(inputValues);
+						//singleSearch = new HEFT_MAX(inputValues);
+						//singleSearch = new HEFT_MIN(inputValues);
+						//singleSearch = new HEFT_MEDIAN(inputValues);
+						//singleSearch = new HEFT_MEAN(inputValues);
+
 						ArrayList<OffloadScheduling> offloads = (ArrayList<OffloadScheduling>) singleSearch.findScheduling();
 						if(offloads != null)
 							for(OffloadScheduling os : offloads) 

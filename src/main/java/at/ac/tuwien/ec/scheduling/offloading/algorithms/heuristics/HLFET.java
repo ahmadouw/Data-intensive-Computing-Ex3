@@ -73,7 +73,7 @@ public class HLFET extends OffloadScheduler {
                 = new PriorityQueue<MobileSoftwareComponent>(new RuntimeComparator());
         /*
          * tasks contains tasks that have to be scheduled for execution.
-         * Tasks are selected according to their upRank (at least in HEFT)
+         * Tasks are selected according to their b-level
          */
         PriorityQueue<MobileSoftwareComponent> tasks = new PriorityQueue<MobileSoftwareComponent>(new NodeRankComparator());
         //To start, we add all nodes in the workflow
