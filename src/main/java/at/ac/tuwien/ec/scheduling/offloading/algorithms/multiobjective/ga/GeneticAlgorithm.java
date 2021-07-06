@@ -23,8 +23,6 @@ public class GeneticAlgorithm extends OffloadScheduler {
     private static final double MUTATION_RATE = 0.01;
     private static final double ELITISM_RATE = 0.05;
     private static final double RATE_LOCAL_COMPUTATION = 0.2;
-    private static final double WEIGHT_RUN_TIME = 0.5;
-    private static final double WEIGHT_BATTERY_LIFE = 0.5;
 
     private int generation;
     private final IntegerDistribution nodeSampler;
@@ -53,6 +51,7 @@ public class GeneticAlgorithm extends OffloadScheduler {
 
         // optimizer over multiple generations
         while (generation < MAX_GENERATIONS) {
+            System.out.println("Running GA in Generation " + generation);
             // next population
             ArrayList<LinkedHashMap<MobileSoftwareComponent, ComputationalNode>> populationNextGen = new ArrayList<>();
 
@@ -103,7 +102,7 @@ public class GeneticAlgorithm extends OffloadScheduler {
 
         // the initial population size is larger than the subsequent populations
         // this is because a not valid scheduling can be created randomly and only valid schedules are considered during selection
-        int initialPopulationSize = POPULATION_SIZE * 10;
+        int initialPopulationSize = POPULATION_SIZE * 5;
         while (population.size() < initialPopulationSize) {
             LinkedHashMap<MobileSoftwareComponent, ComputationalNode> chromosome = new LinkedHashMap<>();
 
@@ -149,7 +148,6 @@ public class GeneticAlgorithm extends OffloadScheduler {
     Fitness function:
     We optimize for run time and battery life of a scheduling. (mentioned in Forum)
     It is necessary to schedule all tasks to calculate the fitness function.
-    The fitnessFunction can be weighted to prioritize one of these values. (weights must sum to 1.0)
     For both values we normalize to range [0, 1].
     For run time the inverse is computed to measure minimizing runtime.
     For battery life we try to maximize (not inverted).
@@ -181,7 +179,7 @@ public class GeneticAlgorithm extends OffloadScheduler {
             if (notValid.containsKey(i)) {
                 fitness.put(i, 0.0);
             } else {
-                fitness.put(i, (fitnessRunTime.get(i) * WEIGHT_RUN_TIME) + (fitnessBatteryLife.get(i) * WEIGHT_BATTERY_LIFE));
+                fitness.put(i, fitnessRunTime.get(i) * fitnessBatteryLife.get(i));
             }
         }
 
