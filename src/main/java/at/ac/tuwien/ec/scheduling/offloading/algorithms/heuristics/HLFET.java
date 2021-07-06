@@ -23,7 +23,6 @@ import at.ac.tuwien.ec.scheduling.offloading.algorithms.heftbased.utils.NodeRank
 import at.ac.tuwien.ec.scheduling.utils.RuntimeComparator;
 import at.ac.tuwien.ec.sleipnir.OffloadingSetup;
 import scala.Tuple2;
-import sun.security.provider.certpath.Vertex;
 
 /**
  * OffloadScheduler class that implements the

@@ -22,6 +22,7 @@ import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MEAN;
 import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MEDIAN;
 import at.ac.tuwien.ec.scheduling.algorithms.heftbased.HEFT_MIN;
 import at.ac.tuwien.ec.scheduling.offloading.algorithms.heuristics.HLFET;
+import at.ac.tuwien.ec.scheduling.offloading.algorithms.multiobjective.ga.GeneticAlgorithm;
 import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -210,7 +211,8 @@ public class OffloadingHelloWorld {
 								new ArrayList<Tuple2<OffloadScheduling,Tuple5<Integer,Double,Double,Double,Double>>>();
 						OffloadScheduler singleSearch;
 						// to use a specific algorithm, just uncomment the specified line and run the simulation
-						singleSearch = new HLFET(inputValues);
+						singleSearch = new GeneticAlgorithm(inputValues);
+						//singleSearch = new HLFET(inputValues);
 						//singleSearch = new HEFT_MAX(inputValues);
 						//singleSearch = new HEFT_MIN(inputValues);
 						//singleSearch = new HEFT_MEDIAN(inputValues);
