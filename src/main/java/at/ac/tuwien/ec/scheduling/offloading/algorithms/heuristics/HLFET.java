@@ -97,7 +97,7 @@ public class HLFET extends OffloadScheduler {
             }
             else
             {
-                //Check the earliest starting time for all available Cloud/Edge nodes
+                //Check the earliest starting time for all available Cloud/Edge nodes and select the target as the node with EST
                 for(ComputationalNode cn : currentInfrastructure.getAllNodes())
                     if(cn.getESTforTask(currTask) < tMin &&
                             isValid(scheduling,currTask,cn))
